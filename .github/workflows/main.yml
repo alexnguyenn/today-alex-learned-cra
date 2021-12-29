@@ -1,0 +1,111 @@
+name: Main
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node JS
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build 
+      run: npm run build 
+      
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: build-artifact
+        path: build
+
+  deploy-preview:
+    name: Deploy preview to Surge
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'alexnguyenn' && github.event_name == 'pull_request'
+    needs: [build]
+    permissions:
+      pull-requests: write 
+    env:
+      SURGE_DOMAIN: ${{ format('https://{0}-{1}-pr{2}-preview.surge.sh', github.repository_owner, 
+        github.event.repository.name, github.event.pull_request.number) }}
+    
+    steps:
+    - name: Setup Node JS
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v2.1.0
+      with:
+        name: build-artifact
+    
+    - name: Install Surge
+      run: npm install --global surge
+      
+    - name: Deploy to Surge
+      run: surge ./ ${{ env.SURGE_DOMAIN }}
+      env:
+        SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+        SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+      
+    - name: Check if deploy comment exists
+      uses: peter-evans/find-comment@v1
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: Preview is deployed to 
+
+    - name: Share/Update deployment link
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          Preview is deployed to ${{ env.SURGE_DOMAIN }} :sunglasses: 
+        edit-mode: replace
+
+  deploy-surge:
+    name: Deploy to Surge
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'alexnguyenn' && github.event_name == 'push'
+    needs: [build]
+    
+    steps:
+    - name: Setup Node JS
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v2.1.0
+      with:
+        name: build-artifact
+    
+    - name: Install Surge
+      run: npm install --global surge
+      
+    - name: Deploy to Surge
+      run: surge ./ https://alex-today-i-learned.surge.sh
+      env:
+        SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+        SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
