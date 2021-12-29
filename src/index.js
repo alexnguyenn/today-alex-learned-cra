@@ -3,9 +3,7 @@ import App from './App';
 import {
     ApolloClient,
     InMemoryCache,
-    ApolloProvider,
-    useQuery,
-    gql
+    ApolloProvider
 } from "@apollo/client";
 import './index.css';
 
