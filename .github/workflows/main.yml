@@ -2,12 +2,12 @@ name: Main
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     paths-ignore:
       - '**.md'
       - '.github/**'
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
     paths-ignore:
       - '**.md'
 
@@ -37,7 +37,7 @@ jobs:
         path: build
 
   deploy-preview:
-    name: Deploy preview to Surge
+    name: Generate Preview 
     runs-on: ubuntu-latest
     if: github.repository_owner == 'alexnguyenn' && github.event_name == 'pull_request'
     needs: [build]
