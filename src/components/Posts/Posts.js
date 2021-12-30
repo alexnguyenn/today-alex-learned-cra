@@ -4,7 +4,7 @@ import "./Posts.css";
 
 const GET_POSTS = gql`
     query {
-        posts {
+        posts(orderBy: createdAt_DESC) {
             id
             title
             description {
