@@ -1,10 +1,11 @@
 import Posts from './components/Posts/Posts';
+import Header from './components/Header';
 import './App.css';
 
 function App() {
     return (
         <div className="App">
-            <h1>What did I learned</h1>
+            <Header />
             <Posts />
         </div>
     );
