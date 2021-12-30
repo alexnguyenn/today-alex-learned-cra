@@ -1,4 +1,5 @@
-import PostItem from "./PostItem";
+import PostList from "./PostList";
+import { useState } from "react";
 import { gql, useQuery } from '@apollo/client';
 import "./Posts.css";
 
@@ -15,16 +16,24 @@ const GET_POSTS = gql`
 `;
 
 const Posts = () => {
-    const { loading, error, data } = useQuery(GET_POSTS);
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error :(</p>;
+    const [posts, setPosts] = useState([]);
+    const { loading, error, data } = useQuery(GET_POSTS, {onCompleted: (data) => setPosts(data.posts)});
     
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error loading content from GraphCMS :(</p>;
+    
+    const searchHandler = (event) => {
+        const searchValue = event.target.value.toLowerCase();
+        const filteredPosts = data.posts.filter(post => {
+            return post.title.toLowerCase().includes(searchValue) || post.description.markdown.toLowerCase().includes(searchValue);
+        });
+        setPosts(filteredPosts);
+    };
+
     return (
-        <div className="posts">
-            {data.posts.map(post => (
-                <PostItem key={post.id} post={post} />
-            ))}
+        <div>
+            <input className="search-bar" type="text" placeholder="Search" onChange={searchHandler}/>
+            <PostList posts={posts} />
         </div>
     );
 }
