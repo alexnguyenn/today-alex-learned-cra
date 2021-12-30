@@ -1,4 +1,6 @@
 ## Today I Learned
+[![Main](https://github.com/alexnguyenn/today-i-learned/actions/workflows/main.yml/badge.svg)](https://github.com/alexnguyenn/today-i-learned/actions/workflows/main.yml)
+
 ***This project is a work-in-progress.***
 
 A simple React app used for displaying my personal notes. The app is deployed to Surge [here](https://alex-today-i-learned.surge.sh). Bootstrapped by [CRA](https://github.com/facebook/create-react-app).
