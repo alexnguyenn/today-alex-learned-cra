@@ -4,8 +4,8 @@ import { gql, useQuery } from '@apollo/client';
 import "./Posts.css";
 
 const GET_POSTS = gql`
-    query($after: String) {
-        postsConnection(orderBy: createdAt_DESC, first: 1, after: $after) {
+    query($after: String, $search: String) {
+        postsConnection(orderBy: createdAt_DESC, first: 10, after: $after, where: {_search: $search}) {
             edges {
                 node {
                     id
@@ -24,25 +24,30 @@ const GET_POSTS = gql`
 `;
 
 const Posts = () => {
-    const [posts, setPosts] = useState([]);
-    const { loading, error, data, fetchMore } = useQuery(GET_POSTS, {
-        onCompleted: (data) => setPosts(data.postsConnection.edges),
+    const [filter, setFilter] = useState("");
+    const { loading, error, data, fetchMore, refetch } = useQuery(GET_POSTS, {
+        variables: {
+            search: "",
+        },
     });
     
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading content from GraphCMS :(</p>;
-
+    
+    const posts = data.postsConnection.edges;
     const pageInfo = data.postsConnection.pageInfo;
     
-    const searchHandler = (event) => {
-        const searchValue = event.target.value.toLowerCase();
-        const filteredPosts = data.postsConnection.edges.filter(post => {
-            return post.node.title.toLowerCase().includes(searchValue) || post.node.description.markdown.toLowerCase().includes(searchValue);
-        });
-        setPosts(filteredPosts);
+    const updateFilter = (event) => {
+        setFilter(event.target.value);
     };
 
-    const loadMoreHandler = () => {
+    const applyFilter = () => {
+        refetch({
+            search: filter,
+        });
+    };
+
+    const loadMore = () => {
         fetchMore({
             variables: {
                 after: pageInfo.endCursor
@@ -52,9 +57,10 @@ const Posts = () => {
 
     return (
         <div>
-            <input id="search-bar" className="shadow-card" type="text" placeholder="Search posts" onChange={searchHandler}/>
+            <input id="search-bar" className="shadow-card" type="text" placeholder="Search posts" onChange={updateFilter}/>
+            <button onClick={applyFilter}>Search</button>
             <PostList posts={posts}/>
-            {pageInfo.hasNextPage && <button className="shadow-card" onClick={loadMoreHandler}>Load more</button>}
+            {pageInfo.hasNextPage && <button onClick={loadMore}>Load more</button>}
         </div>
     );
 }
