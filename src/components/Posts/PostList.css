@@ -8,9 +8,17 @@
     padding-right: 70px;
 }
 
-@media (max-width: 600px) {
+@media screen and (max-width: 992px) {
     .post-list {
         padding-left: 0;
         padding-right: 0;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .post-list {
+        gap: 1.5rem;
     }
 }

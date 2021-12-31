@@ -35,7 +35,7 @@ const Posts = () => {
 
     return (
         <div>
-            <input className="search-bar" type="text" placeholder="Search" onChange={searchHandler}/>
+            <input id="search-bar" className="shadow-card" type="text" placeholder="Search posts" onChange={searchHandler}/>
             <PostList posts={posts} />
         </div>
     );
