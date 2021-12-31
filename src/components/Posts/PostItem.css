@@ -3,6 +3,15 @@
     max-width: 350px;
     text-align: left;
     word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.post-item::-webkit-scrollbar {
+    width: 0.5rem;
+}
+.post-item::-webkit-scrollbar-thumb {
+    background: rgb(197, 197, 197);   
 }
 
 @media screen and (max-width: 992px) {
