@@ -3,7 +3,11 @@
 
 ***This project is a work-in-progress.***
 
-A simple React app used for displaying my personal notes. The app is deployed to Surge [here](https://alex-today-i-learned.surge.sh). Bootstrapped by [CRA](https://github.com/facebook/create-react-app).
+A simple React app to help me keep track of my notes (programming-related). 
+An alternative to messaging to myself in Slack :sweat_smile:
+
+The app is deployed to Surge [here](https://alex-today-i-learned.surge.sh). 
+Bootstrapped via [CRA](https://github.com/facebook/create-react-app).
 
 Main tools used:
 * [GraphCMS](https://graphcms.com/): GraphQL Content API for my notes. Very quick and easy to set up. 
