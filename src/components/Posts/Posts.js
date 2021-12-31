@@ -17,7 +17,10 @@ const GET_POSTS = gql`
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
-    const { loading, error, data } = useQuery(GET_POSTS, {onCompleted: (data) => setPosts(data.posts)});
+    const { loading, error, data } = useQuery(GET_POSTS, {
+        onCompleted: (data) => setPosts(data.posts), 
+        pollInterval: 1000
+    });
     
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading content from GraphCMS :(</p>;
