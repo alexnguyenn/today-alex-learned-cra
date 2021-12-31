@@ -4,12 +4,20 @@ import { gql, useQuery } from '@apollo/client';
 import "./Posts.css";
 
 const GET_POSTS = gql`
-    query {
-        posts(orderBy: createdAt_DESC) {
-            id
-            title
-            description {
-                markdown
+    query($after: String) {
+        postsConnection(orderBy: createdAt_DESC, first: 1, after: $after) {
+            edges {
+                node {
+                    id
+                    title
+                    description {
+                        markdown
+                    }
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
             }
         }
     }
@@ -17,26 +25,37 @@ const GET_POSTS = gql`
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
-    const { loading, error, data } = useQuery(GET_POSTS, {
-        onCompleted: (data) => setPosts(data.posts), 
-        pollInterval: 1000
+    const { loading, error, data, fetchMore } = useQuery(GET_POSTS, {
+        onCompleted: (data) => setPosts(data.postsConnection.edges),
+        pollInterval: 500,
     });
     
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading content from GraphCMS :(</p>;
+
+    const pageInfo = data.postsConnection.pageInfo;
     
     const searchHandler = (event) => {
         const searchValue = event.target.value.toLowerCase();
-        const filteredPosts = data.posts.filter(post => {
-            return post.title.toLowerCase().includes(searchValue) || post.description.markdown.toLowerCase().includes(searchValue);
+        const filteredPosts = data.postsConnection.edges.filter(post => {
+            return post.node.title.toLowerCase().includes(searchValue) || post.node.description.markdown.toLowerCase().includes(searchValue);
         });
         setPosts(filteredPosts);
+    };
+
+    const loadMoreHandler = () => {
+        fetchMore({
+            variables: {
+                after: pageInfo.endCursor
+            },
+        });
     };
 
     return (
         <div>
             <input id="search-bar" className="shadow-card" type="text" placeholder="Search posts" onChange={searchHandler}/>
-            <PostList posts={posts} />
+            <PostList posts={posts}/>
+            {pageInfo.hasNextPage && <button className="shadow-card" onClick={loadMoreHandler}>Load more</button>}
         </div>
     );
 }
