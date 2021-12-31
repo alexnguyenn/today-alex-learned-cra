@@ -27,7 +27,6 @@ const Posts = () => {
     const [posts, setPosts] = useState([]);
     const { loading, error, data, fetchMore } = useQuery(GET_POSTS, {
         onCompleted: (data) => setPosts(data.postsConnection.edges),
-        pollInterval: 500,
     });
     
     if (loading) return <p>Loading...</p>;
