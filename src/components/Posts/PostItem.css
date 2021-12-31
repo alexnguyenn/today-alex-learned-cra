@@ -16,18 +16,20 @@
 
 @media screen and (max-width: 992px) {
     .post-item {
-        max-width: 300px;
+        width: 300px;
+        max-width: unset;
+        max-height: unset;
     }
 }
 
 @media screen and (max-width: 768px) {
     .post-item {
-        max-width: 230px;
+        width: calc(43% - 2rem);    
     }
 }
 
 @media screen and (max-width: 576px) {
     .post-item {
-        max-width: 400px;
+        width: 85%;
     }
 }
