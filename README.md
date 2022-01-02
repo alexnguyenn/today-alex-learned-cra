@@ -6,7 +6,7 @@
 A simple React app to help me keep track of my notes (programming-related). 
 An alternative to messaging to myself in Slack :sweat_smile:
 
-The app is deployed to Surge [todayalexlearned.surge.sh](https://todayalexlearned.surge.sh). 
+The app is deployed to Surge at [todayalexlearned.surge.sh](https://todayalexlearned.surge.sh). 
 Bootstrapped via [CRA](https://github.com/facebook/create-react-app).
 
 Main tools used:
