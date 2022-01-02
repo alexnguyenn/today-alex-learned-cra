@@ -4,8 +4,8 @@ import { gql, useQuery } from '@apollo/client';
 import "./Posts.css";
 
 const GET_POSTS = gql`
-    query($after: String, $search: String) {
-        postsConnection(orderBy: createdAt_DESC, first: 5, after: $after, where: {_search: $search}) {
+    query($first: Int!, $after: String, $search: String! = "") {
+        postsConnection(orderBy: createdAt_DESC, first: $first, after: $after, where: {_search: $search}) {
             edges {
                 node {
                     id
@@ -28,7 +28,7 @@ const Posts = () => {
     const [filter, setFilter] = useState("");
     const { loading, error, data, fetchMore, refetch } = useQuery(GET_POSTS, {
         variables: {
-            search: "",
+            first: 20,
         },
     });
 
@@ -52,6 +52,7 @@ const Posts = () => {
         if (pageInfo.hasNextPage) {
             fetchMore({
                 variables: {
+                    first: 10,
                     after: pageInfo.endCursor
                 },
             });

@@ -21,7 +21,6 @@ const PostList = (props) => {
                     <h2>{post.node.title}</h2>
                     <ReactMarkdown children={post.node.description.markdown}/>
                 </div>
-
             ))}
         </div>
     );
