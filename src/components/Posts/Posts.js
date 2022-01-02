@@ -1,5 +1,5 @@
 import PostList from "./PostList";
-import { useState } from "react";
+import { useRef } from "react";
 import { gql, useQuery } from '@apollo/client';
 import "./Posts.css";
 
@@ -25,7 +25,7 @@ const GET_POSTS = gql`
 
   
 const Posts = () => {
-    const [filter, setFilter] = useState("");
+    const searchRef = useRef();
     const { loading, error, data, fetchMore, refetch } = useQuery(GET_POSTS, {
         variables: {
             first: 20,
@@ -38,13 +38,15 @@ const Posts = () => {
     const posts = data.postsConnection.edges;
     const pageInfo = data.postsConnection.pageInfo;
 
-    const updateFilter = (event) => {
-        setFilter(event.target.value);
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter") {
+            applyFilter();
+        }
     };
 
     const applyFilter = () => {
         refetch({
-            search: filter,
+            search: searchRef.current.value,
         });
     };
 
@@ -61,8 +63,14 @@ const Posts = () => {
 
     return (
         <div>
-            <input id="search-bar" className="shadow-card" type="text" placeholder="Search posts" onChange={updateFilter}/>
-            <button onClick={applyFilter}>Search</button>
+            <input 
+                id="search-bar" 
+                className="shadow-card" 
+                type="text" 
+                placeholder="Search posts" 
+                ref = {searchRef}
+                onKeyPress={handleKeyPress}
+            />
             <PostList posts={posts} loadMore={loadMore}/>
         </div>
     );
