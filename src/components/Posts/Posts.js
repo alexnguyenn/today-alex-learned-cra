@@ -48,9 +48,13 @@ const Posts = () => {
     const applyFilter = () => {
         if (searchRef.current.value) {
             refetch({
-                search: searchRef.current.value,
+                search: searchRef.current.value.trim(),
             });
             setIsFiltered(true);
+        } else {
+            if (isFiltered) {
+                resetFilter();
+            }
         }
     };
 
