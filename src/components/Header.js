@@ -5,7 +5,9 @@ const Header = () => {
         <header>
             <h1>Today I Learned</h1>
             <p>
-                {"This is a simple app I used to keep track of all my personal notes. "} 
+                {"Hi there! I am "}
+                <a href="https://github.com/alexnguyenn">Alex</a>
+                {". This website is where I keep track of all my programming-related notes. "} 
                 <a href="https://github.com/alexnguyenn/today-i-learned">Github</a>
             </p>
         </header>
