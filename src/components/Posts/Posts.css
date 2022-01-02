@@ -17,6 +17,12 @@
     border-width: .5px
 }
 
+#reset-filter {
+    color: blue;
+    font-size: large;
+    cursor: pointer;
+}
+
 .shadow-card {
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
