@@ -8,6 +8,23 @@
     padding-right: 70px;
 }
 
+.post-item {
+    padding: 1rem;
+    max-width: 350px;
+    text-align: left;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.post-item::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+.post-item::-webkit-scrollbar-thumb {
+    background: rgb(197, 197, 197);   
+}
+
 @media screen and (max-width: 992px) {
     .post-list {
         padding-left: 0;
@@ -15,10 +32,24 @@
         margin-left: 10px;
         margin-right: 10px;
     }
+    .post-item {
+        width: 300px;
+        max-width: unset;
+        max-height: unset;
+    }
 }
 
 @media screen and (max-width: 768px) {
     .post-list {
         gap: 1.5rem;
+    }
+    .post-item {
+        width: calc(43% - 2rem);    
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .post-item {
+        width: 85%;
     }
 }

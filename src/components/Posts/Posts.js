@@ -1,42 +1,90 @@
 import PostList from "./PostList";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { gql, useQuery } from '@apollo/client';
 import "./Posts.css";
 
 const GET_POSTS = gql`
-    query {
-        posts(orderBy: createdAt_DESC) {
-            id
-            title
-            description {
-                markdown
+    query($first: Int!, $after: String, $search: String! = "") {
+        postsConnection(orderBy: createdAt_DESC, first: $first, after: $after, where: {_search: $search}) {
+            edges {
+                node {
+                    id
+                    title
+                    description {
+                        markdown
+                    }
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
             }
         }
     }
-`;
+`;  
 
+  
 const Posts = () => {
-    const [posts, setPosts] = useState([]);
-    const { loading, error, data } = useQuery(GET_POSTS, {
-        onCompleted: (data) => setPosts(data.posts), 
-        pollInterval: 1000
+    const [isFiltered, setIsFiltered] = useState(false);
+    const searchRef = useRef();
+    const { loading, error, data, fetchMore, refetch } = useQuery(GET_POSTS, {
+        variables: {
+            first: 20,
+        },
     });
-    
+
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading content from GraphCMS :(</p>;
     
-    const searchHandler = (event) => {
-        const searchValue = event.target.value.toLowerCase();
-        const filteredPosts = data.posts.filter(post => {
-            return post.title.toLowerCase().includes(searchValue) || post.description.markdown.toLowerCase().includes(searchValue);
-        });
-        setPosts(filteredPosts);
+    const posts = data.postsConnection.edges;
+    const pageInfo = data.postsConnection.pageInfo;
+
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter") {
+            applyFilter();
+        }
+    };
+
+    const applyFilter = () => {
+        if (searchRef.current.value) {
+            refetch({
+                search: searchRef.current.value,
+            });
+            setIsFiltered(true);
+        }
+    };
+
+    const resetFilter = () => {
+        refetch({search: ""});
+        searchRef.current.value = "";
+        setIsFiltered(false);
+    };
+
+    const loadMore = () => {
+        if (pageInfo.hasNextPage) {
+            fetchMore({
+                variables: {
+                    first: 10,
+                    after: pageInfo.endCursor
+                },
+            });
+        };
     };
 
     return (
         <div>
-            <input id="search-bar" className="shadow-card" type="text" placeholder="Search posts" onChange={searchHandler}/>
-            <PostList posts={posts} />
+            <input 
+                id="search-bar" 
+                className="shadow-card" 
+                type="text" 
+                placeholder="Search posts (press Enter to search)" 
+                ref = {searchRef}
+                onKeyPress={handleKeyPress}
+            />
+            {isFiltered && (
+                <p id="reset-filter" onClick={resetFilter}>Reset Search</p>
+            )}
+            <PostList posts={posts} loadMore={loadMore}/>
         </div>
     );
 }
