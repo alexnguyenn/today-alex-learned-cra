@@ -4,10 +4,13 @@ import "./PostList.css";
 
 const PostList = (props) => {
     const { observe } = useInView({
-        onEnter: ({ unobserve }) => {
-            unobserve();
-            props.loadMore();
-        },
+        threshold: 0.5,
+        onChange: ({inView, unobserve}) => {
+            if (inView) {
+                unobserve();
+                props.loadMore();
+            } 
+        }
     });
 
     return (
