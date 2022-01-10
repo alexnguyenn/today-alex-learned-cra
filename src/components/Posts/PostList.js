@@ -19,7 +19,7 @@ const PostList = (props) => {
                     ref={index === props.posts.length - 1 ? observe : null}
                 >
                     <h2>{post.node.title}</h2>
-                    <ReactMarkdown children={post.node.description.markdown}/>
+                    <ReactMarkdown children={post.node.description}/>
                 </div>
             ))}
         </div>
