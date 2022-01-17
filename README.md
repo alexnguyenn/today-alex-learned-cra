@@ -1,5 +1,5 @@
 ## Today Alex Learned
-[![Main](https://github.com/alexnguyenn/today-i-learned-cra/actions/workflows/main.yml/badge.svg)](https://github.com/alexnguyenn/today-i-learned/actions/workflows/main.yml)
+[![Main](https://github.com/alexnguyenn/today-i-learned-cra/actions/workflows/main.yml/badge.svg)](https://github.com/alexnguyenn/today-i-learned-cra/actions/workflows/main.yml)
 
 ***This project has been moved to [today-alex-learned](https://github.com/alexnguyenn/today-alex-learned)***
 
